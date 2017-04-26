@@ -1,13 +1,5 @@
-module abstractHashTable [Key, Value]
+module abstractHashTable [Key, Value, KVPair]
 open util/sequniv
-
-sig KVPair {
-	key: Key,
-	val: Value
-}{
-	one key
-	one val
-}
 
 sig Chain {
 	elements: seq KVPair
