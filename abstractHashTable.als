@@ -1,28 +1,12 @@
-sig HashCode {}
-sig Key {
-	hash : HashCode
-}
-sig Value {}
-sig KVPair {
-	key: Key,
-	val: Value
-}
+open basicDefinitions
 
-
+// Assert that if 2 KVPairs are in the Hashtable, their keys are different
+// PREDICATE?
 sig HashTable {
 	// Each value has one key, represents all the KV Pairs in the table
 	data: set KVPair
 }
 
-// Assert that if keys are equal, so are their hashvalues
-fact EqualHashCode {
-	all kv1,kv2 : KVPair | {
-		kv1.key = kv2.key implies kv1.key.hash = kv2.key.hash
-	}
-}
-
-// Assert that if 2 KVPairs are in the Hashtable, their keys are different
-// PREDICATE?
 fact NoKVPairsWithSameKey {
 	all h : HashTable | {
 		all disj kv1,kv2 : KVPair | {
@@ -71,7 +55,7 @@ pred lookup [h: HashTable, k: Key, v : Value] {
 			kv.val = v
 		}
 	}
-	// Otherwise, v should be empy/null
+	// Otherwise, v should be empty/null
 	k not in h.data.key implies {
 		no v
 	}

@@ -1,4 +1,4 @@
-module abstractHashTable [Key, Value, KVPair]
+open basicDefinitions
 open util/sequniv
 
 sig Chain {
@@ -9,48 +9,65 @@ sig ChainingSystem {
 }
 
 pred init [c: ChainingSystem] {
-	// Every HashCode is mapped to an empty list?
+	// Every HashCode is mapped to an empty list
 	all hc : HashCode | {
-		no hc.map.elements
+		no hc.(c.map).elements
 	}
 }
 
-pred put [c, c': ChainingSystem, k: Key, v : Value] {
+pred put [c, c': ChainingSystem, kv : KVPair] {
+	let hc = kv.key.hash | {
+	let list =hc.(c.map).elements | {
+		// If the key is already in its hashcode's list its value should be overridden
+		kv.key in Int.list.key implies {
+			one kv2 : Int.list | {
+				let i = list.indsOf[kv2] | {
+					hc.(c'.map).elements = (list.delete[i]).insert[i, kv]
+				}
+			}
+		}
+		// Otherwise the KVPair is added
+		kv.key not in Int.list.key implies {
+			hc.(c'.map).elements = list.delete[list.indsOf[kv]]
+		}
+	}
+	}
+}
+
+pred delete [c, c': ChainingSystem, k: Key] {
 	let hc = k.hash | {
-		one kv : KVPair | {
-			kv.key = k
-			kv.val = v
-			no elems : hc.c.map.elems | {
-				elems.key = k
-			} implies hc.c'.map =  hc.c.map.append[kv]
-			one elems : hc.c.map.elems | {
-				elems.key = k
-			} implies hc.c'.map =  hc.c.map.append[kv] // FIX????
+	let list =hc.(c.map).elements | {
+		// If the key is already in its hashcode's list its should be removed
+		k in Int.list.key implies {
+			one kv2 : Int.list | {
+				let i = list.indsOf[kv2] | {
+					hc.(c'.map).elements = list.delete[i]
+				}
+			}
 		}
+		// Otherwise the list is unchanged
+		k not in Int.list.key implies {
+			hc.(c'.map).elements = list
+		}
+	}
 	}
 }
 
-// ???????
-fun update[sq1, Chain, kv : KVPair, v1 : Value] {
-	let removed = s.delete[s.indsOf[kv]] | {
-		one kv : KVPair | {
-			removed.append
+pred lookup [c: ChainingSystem, k: Key, v : Value] {
+	let hc = k.hash | {
+	let list =hc.(c.map).elements | {
+		// If the key is already in its hashcode's list its should be removed
+		k in Int.list.key implies {
+			one kv2 : Int.list | {
+				kv2.val = v
+			}
+		}
+		// Otherwise, v should be empty/null
+		k not in Int.list.key implies {
+			no v
 		}
 	}
-	removed
+	}
 }
 
-// ???????
-pred delete [h, h': HashTable, k: Key] {
-	// Any pair with the provided key should be removed
-	let currlist = hc.c.map.elems
-	hc.c'.map.elems.key = hc.c.map.elems.key - k
-	}
-
-// ???????
-pred lookup [h: HashTable, k: Key, v : Value] {
-	let v' = h.data [k] | some v' implies v = v'
-	}
-
-// Check properties???
-
+run {} for exactly 2 KVPair, exactly 2 HashCode, 2 Chain, exactly 1 Key, exactly 2 Value, exactly 1 ChainingSystem
