@@ -8,6 +8,11 @@ sig ChainingSystem {
 	map: HashCode one -> Chain
 }
 
+/*
+NOT WORKING BECAUSE HASH TABLE STARTS WITH VALUES?
+SWITCH TO USING EVENTS??
+*/
+
 pred init [c: ChainingSystem] {
 	// Every HashCode is mapped to an empty list
 	all hc : HashCode | {
@@ -70,4 +75,29 @@ pred lookup [c: ChainingSystem, k: Key, v : Value] {
 	}
 }
 
-run {} for exactly 2 KVPair, exactly 2 HashCode, 2 Chain, exactly 1 Key, exactly 2 Value, exactly 1 ChainingSystem
+// This command should not find any counterexample
+PutLookup: check {
+	all c, c': ChainingSystem, kv: KVPair, v2: Value | {
+		put [c, c', kv] and lookup [c', kv.key, v2] => kv.val = v2
+	}
+}
+
+/*
+pred putOK {
+	some disj h1,h2 : HashTable | {
+		some kv : KVPair | {
+			put[h1,h2,kv]
+		}
+	}
+}
+run putOK for exactly 2 KVPair, exactly 2 HashCode, exactly 1 Key, exactly 2 Value, exactly 2 HashTable
+
+pred deleteOK {
+	some disj h1,h2 : HashTable | {
+		some k : Key | {
+			delete[h1,h2,k]
+		}
+	}
+}
+run deleteOK for exactly 3 KVPair, exactly 2 HashCode, exactly 2 Key, exactly 3 Value, exactly 2 HashTable
+*/

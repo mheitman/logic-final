@@ -24,7 +24,7 @@ pred put [h, h': HashTable, kv : KVPair] {
 	kv.key in h.data.key implies {
 		one kv2 : h.data | {
 			kv2.key = kv.key
-			h'.data = h.data - kv2 + kv
+			h'.data = (h.data - kv2) + kv
 		}
 	}
 	// Otherwise the KVPair is added
