@@ -1,26 +1,31 @@
 open basicDefinitions
 open util/sequniv
 
+open util/ordering[ChainingTable]
+
 sig Chain {
 	elements: seq KVPair
 }
-sig ChainingSystem {
+sig ChainingTable {
 	map: HashCode one -> Chain
 }
 
-/*
-NOT WORKING BECAUSE HASH TABLE STARTS WITH VALUES?
-SWITCH TO USING EVENTS??
-*/
-
-pred init [c: ChainingSystem] {
-	// Every HashCode is mapped to an empty list
-	all hc : HashCode | {
-		no hc.(c.map).elements
+fact trace {
+    all c: ChainingTable - last| {
+	one kv : KVPair | {
+		put [c, c.next, kv]
+    	} or one k: Key | {
+		delete [c, c.next, k]
 	}
+    }
 }
 
-pred put [c, c': ChainingSystem, kv : KVPair] {
+fact init {
+	// Every HashCode is mapped to an empty list
+	no HashCode.(first.map).elements
+}
+
+pred put [c, c': ChainingTable, kv : KVPair] {
 	let hc = kv.key.hash | {
 	let list =hc.(c.map).elements | {
 		// If the key is already in its hashcode's list its value should be overridden
@@ -33,13 +38,13 @@ pred put [c, c': ChainingSystem, kv : KVPair] {
 		}
 		// Otherwise the KVPair is added
 		kv.key not in Int.list.key implies {
-			hc.(c'.map).elements = list.delete[list.indsOf[kv]]
+			hc.(c'.map).elements = list.add[kv]
 		}
 	}
 	}
 }
 
-pred delete [c, c': ChainingSystem, k: Key] {
+pred delete [c, c': ChainingTable, k: Key] {
 	let hc = k.hash | {
 	let list =hc.(c.map).elements | {
 		// If the key is already in its hashcode's list its should be removed
@@ -58,7 +63,7 @@ pred delete [c, c': ChainingSystem, k: Key] {
 	}
 }
 
-pred lookup [c: ChainingSystem, k: Key, v : Value] {
+pred lookup [c: ChainingTable, k: Key, v : Value] {
 	let hc = k.hash | {
 	let list =hc.(c.map).elements | {
 		// If the key is already in its hashcode's list its should be removed
@@ -77,8 +82,16 @@ pred lookup [c: ChainingSystem, k: Key, v : Value] {
 
 // This command should not find any counterexample
 PutLookup: check {
-	all c, c': ChainingSystem, kv: KVPair, v2: Value | {
+	all c, c': ChainingTable, kv: KVPair, v2: Value | {
 		put [c, c', kv] and lookup [c', kv.key, v2] => kv.val = v2
+	}
+}
+
+NoKVPairsWithSameKey: check {
+	all c : ChainingTable | {
+		all disj kv1,kv2 : KVPair | {
+			(kv1 in Int.(HashCode.(c.map).elements) and kv2 in Int.(HashCode.(c.map).elements)) implies kv1.key != kv2.key
+		}
 	}
 }
 
