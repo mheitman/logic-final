@@ -1,12 +1,11 @@
 open basicDefinitions
 
-// Assert that if 2 KVPairs are in the Hashtable, their keys are different
-// PREDICATE?
 sig HashTable {
-	// Each value has one key, represents all the KV Pairs in the table
 	data: set KVPair
 }
 
+
+// If 2 KVPairs are in the Hashtable, their keys are different
 fact NoKVPairsWithSameKey {
 	all h : HashTable | {
 		all disj kv1,kv2 : KVPair | {
@@ -24,7 +23,7 @@ pred put [h, h': HashTable, kv : KVPair] {
 	kv.key in h.data.key implies {
 		one kv2 : h.data | {
 			kv2.key = kv.key
-			h'.data = h.data - kv2 + kv
+			h'.data = (h.data - kv2) + kv
 		}
 	}
 	// Otherwise the KVPair is added
