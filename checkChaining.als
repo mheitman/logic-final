@@ -4,7 +4,7 @@ open abstractHashTable as absHT
 
 fun alpha [c: ChainingTable]: HashTable {
 	{h: HashTable | {
-		h.data = HashCode.(c.map)
+		h.data = HashCode.(c.map).elems
 	}}
 }
 
