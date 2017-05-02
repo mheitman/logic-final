@@ -73,7 +73,7 @@ pred delete [c, c': ChainingTable, k: Key] {
 pred lookup [c: ChainingTable, k: Key, v : Value] {
 	let hc = k.hash | {
 	let list =hc.(c.map) | {
-		// If the key is already in its hashcode's list its should be removed
+		// If the key is in the table, its value should match the expected value
 		k in list.elems.key implies {
 			one kv2 : list.elems | {
 				kv2.key = k
@@ -95,6 +95,19 @@ PutLookup: check {
 	}
 }
 
+// This command should not find any counterexample
+AllKVPairsInCorrectSeq : check {
+	all c : ChainingTable | {
+		all kv1 : KVPair | {
+			kv1 in HashCode.(c.map).elems implies kv1 in (kv1.key.hash).(c.map).elems
+			all hc : HashCode - kv1.key.hash | {
+				kv1 not in hc.(c.map).elems
+			}
+		}
+	}
+}
+
+// This command should not find any counterexample
 NoKVPairsWithSameKey: check {
 	all c : ChainingTable | {
 		all disj kv1,kv2 : KVPair | {
@@ -103,6 +116,9 @@ NoKVPairsWithSameKey: check {
 	}
 }
 
+
+
+// Use to see some example instances
 pred putOK {
 	some disj c1,c2 : ChainingTable | {
 		some kv : KVPair | {
