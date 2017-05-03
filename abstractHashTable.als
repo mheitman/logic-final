@@ -19,7 +19,7 @@ pred init [h: HashTable] {
 }
 
 pred put [h, h': HashTable, kv : KVPair] {
-	// If the key is already in the HashTable it's value should be overridden
+	// If the key is already in the HashTable its value should be overridden
 	kv.key in h.data.key implies {
 		one kv2 : h.data | {
 			kv2.key = kv.key

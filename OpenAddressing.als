@@ -12,7 +12,7 @@ sig OATable {
 
 fact trace {
     all oat: OATable - last| {
-	some kv : KVPair | {
+	one kv : KVPair | {
 		put [oat, oat.next, kv]
     	} or some k: Key | {
 		delete [oat, oat.next, k]
@@ -38,17 +38,19 @@ pred put [oat, oat': OATable, kv: KVPair] {
 	} else {
 		kv.key.hash in oat.hashFunction.elems
 		let ind = oat.hashFunction.idxOf [kv.key.hash] {
-			-- Already in map, just needs to be updated
+			// Already in map, just needs to be updated
 			kv.key in Int.(oat.map).key => {
-				let ind2 = oat.map.kv {
-					oat'.map - (ind2 -> ind2.(oat.map)) = oat.map - (ind2 -> ind2.(oat.map))
-					ind2 -> kv in oat'.map
+				one kv2: Int.(oat.map) | {
+				kv2.key = kv.key
+				let ind2 = oat.map.kv2 {
+					oat'.map = oat.map - (ind2 -> KVPair) + (ind2 -> kv)
 					oat'.empty = oat.empty
 					oat'.hashFunction = oat.hashFunction
 					oat'.capacity = oat.capacity
 				}
+			}
 			} else {
-				-- Insert into map
+				// Insert into map
 				let loc = probe[oat, ind] | {
 					oat'.map = oat.map + loc -> kv
 					oat'.empty = oat.empty - loc
