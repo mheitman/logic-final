@@ -96,6 +96,13 @@ PutLookup: check {
 }
 
 // This command should not find any counterexample
+NoMatchingKeyLookup: check {
+	all c : ChainingTable, k: Key, v: Value | {
+		k not in HashCode.(c.map).elems.key and lookup[c, k, v] implies no v
+	}
+}
+
+// This command should not find any counterexample
 AllKVPairsInCorrectSeq : check {
 	all c : ChainingTable | {
 		all kv1 : KVPair | {
