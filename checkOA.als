@@ -4,7 +4,7 @@ open abstractHashTable as absHT
 
 fun alpha [oat: OATable]: HashTable {
 	{h: HashTable | {
-		h.data = HashCode.(c.map).elems
+		h.data = HashCode.(oat.map).elems
 	}}
 }
 
