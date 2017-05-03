@@ -31,15 +31,16 @@ ChainingTable
 Open Addressing
 	We have modeled the Open Addressing implementation of the HashTables using an ordered sig with the following properties:
 		map - the set of data, models as a set of indices to KVPairs
-		hashFunction - not a "hashFunction", used to find the smallest available index for insertion
+		hashFunction - not a "hashFunction", used to find the smallest available index for insertion (map HashCodes to their proper indices in the "array")
 		empty - a set of available indices to insert a value
 		capacity - indicates the number of KVPairs the table can hold, because in open addressing the number of elements is restricted to the size of the table)
-	Because while loops are not possible in Alloy, our model was constrained far more than we originally anticipated; therefore, our implementations of lookup and delete do not very closely resemble the steps made by a true implementation.
+    We did make a probe function that essentially returned what the result of actually probing would be-- we did not use isDeleted flags or nulls, as they would require loops, but this seemed like a good option in terms of modeling what doing the actual process would return.
+	Because while loops are not possible in Alloy, our model was constrained far more than we originally anticipated; therefore, our implementations of lookup and delete do not very closely resemble the steps made by a true implementation. 
 	We can also conclude that Open Addressing is a valid strategy for implementing HashTables.
 	
 Comparisons
-	Chaining HashTables have no fixed capacity (depends only on the machine using them), while Open Addressing 
-	Chaining HashTables require much more overhead (defining and using LinkedLists, etc.) than Open Addressing
+	Chaining HashTables have no fixed capacity (depends only on the machine using them), while Open Addressing did. We will elaborate more during the presentation. One of the more significant differences mainly came in the form of what was possible to model in Alloy-- again, since Alloy does not support while loops, which are pretty necessary in a search for OpenAddressing, it was difficult to abstract out this functionality. 
+    Chaining HashTables require much more overhead (defining and using LinkedLists, etc.) than Open Addressing
 
 Challenges
 	When predicates failed or unexpected examples were being displayed, it was very difficult to find the root of the problem.
