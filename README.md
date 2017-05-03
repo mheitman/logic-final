@@ -1,6 +1,6 @@
 # logic-final
 
-We will be analyzing hash tables using Alloy, exploring the two main ways of implementing them-- via chaining (stores a list of elements in each bucket) and open addressing (stores only one element in each bucket). We have modeled both of these concrete implementations and compared their behaviors. We have also hoped to conclude that these strategies are valid HashTables implementations because we were able to create abstraction functions for both implementations. We could make this affirmation about Chaining; however, because of our less specific OpenAddressing model, we feel less sure about making the same conclusions for this strategy.
+We will be analyzing hash tables using Alloy, exploring the two main ways of implementing them-- via chaining (stores a list of elements in each bucket) and open addressing (stores only one element in each bucket). We have modeled both of these concrete implementations and compared their behaviors. We have also hoped to conclude that these strategies are valid HashTables implementations because we were able to create abstraction functions for both implementations. We could make this affirmation about Chaining and OpenAddressing; however, because of some concerns for OpenAddressing, described below, we feel less sure about making the same conclusions for this strategy.
 
 While modeling, we decided to abstract out the functionality of hash functions because of their great variety and the number limitations of Alloy.
 Additionally, we chose to represent HashCodes as a sig, rather than Integers because of the limitations of Alloy.
@@ -35,8 +35,7 @@ Open Addressing
 		empty - a set of available indices to insert a value
 		capacity - indicates the number of KVPairs the table can hold, because in open addressing the number of elements is restricted to the size of the table)
 	Because while loops are not possible in Alloy, our model was constrained far more than we originally anticipated; therefore, our implementations of lookup and delete do not very closely resemble the steps made by a true implementation.
-	Additionally, as of writing this README, we failed the putOK check when trying to show that our Open Addressing was a valid concrete implementation of the abstract model. Hopefully that issue is resolved.
-	If so, we can also conclude that Open Addressing is a valid strategy for implementing HashTables.
+	We can also conclude that Open Addressing is a valid strategy for implementing HashTables.
 	
 Comparisons
 	Chaining HashTables have no fixed capacity (depends only on the machine using them), while Open Addressing 
