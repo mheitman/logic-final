@@ -10,8 +10,6 @@ sig OATable {
 	capacity: Int
 }
 
---fact { some OATable.hashFunction }
-
 fact trace {
     all oat: OATable - last| {
 	some kv : KVPair | {
@@ -39,15 +37,16 @@ pred put [oat, oat': OATable, kv: KVPair] {
 		oat'.capacity = oat.capacity
 	} else {
 		kv.key.hash in oat.hashFunction.elems
-	--	let ind = oat.hashFunction.idxOf [kv.key.hash] {
-		let ind = oat.map.kv {
+		let ind = oat.hashFunction.idxOf [kv.key.hash] {
 			-- Already in map, just needs to be updated
 			kv.key in Int.(oat.map).key => {
-				oat'.map - (ind -> ind.(oat.map)) = oat.map - (ind -> ind.(oat.map))
-				ind -> kv in oat'.map
-				oat'.empty = oat.empty
-				oat'.hashFunction = oat.hashFunction
-				oat'.capacity = oat.capacity
+				let ind2 = oat.map.kv {
+					oat'.map - (ind2 -> ind2.(oat.map)) = oat.map - (ind2 -> ind2.(oat.map))
+					ind2 -> kv in oat'.map
+					oat'.empty = oat.empty
+					oat'.hashFunction = oat.hashFunction
+					oat'.capacity = oat.capacity
+				}
 			} else {
 				-- Insert into map
 				let loc = probe[oat, ind] | {
@@ -86,12 +85,6 @@ fun probe [oat: OATable, idx: Int]: Int {
 		}
 	}
 }
-/*
-pred lookup [oat: OATable, k: Key, v : Value] {
-	k in Int.(oat.map).key => {
-		KVPair.k = v
-	} else no v
-}*/
 
 run {} for 2 KVPair, exactly 2 HashCode, exactly 2 Key, exactly 2 Value, 2 OATable
 

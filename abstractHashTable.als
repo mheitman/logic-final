@@ -67,22 +67,3 @@ PutLookup: check {
 	}
 }
 
-/*
-pred putOK {
-	some disj h1,h2 : HashTable | {
-		some kv : KVPair | {
-			put[h1,h2,kv]
-		}
-	}
-}
-run putOK for exactly 2 KVPair, exactly 2 HashCode, exactly 1 Key, exactly 2 Value, exactly 2 HashTable
-
-pred deleteOK {
-	some disj h1,h2 : HashTable | {
-		some k : Key | {
-			delete[h1,h2,k]
-		}
-	}
-}
-run deleteOK for exactly 3 KVPair, exactly 2 HashCode, exactly 2 Key, exactly 3 Value, exactly 2 HashTable
-*/
