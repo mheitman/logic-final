@@ -14,8 +14,8 @@ fact trace {
     all oat: OATable - last| {
 	some kv : KVPair | {
 		put [oat, oat.next, kv]
-    	} or some kv: KVPair | {
-		delete [oat, oat.next, kv]
+    	} or some k: Key | {
+		delete [oat, oat.next, k]
 	}
     }
 }
@@ -60,16 +60,19 @@ pred put [oat, oat': OATable, kv: KVPair] {
 	}
 }
 
-pred delete [oat, oat': OATable, kv: KVPair] {
-	kv.key in Int.(oat.map).key => {
-		let loc =  oat.map.kv | {
-			oat'.map = oat.map - (loc -> loc.(oat.map))
-			oat'.empty = oat.empty + loc
-			oat'.hashFunction = oat.hashFunction
-			oat'.capacity = oat.capacity
+pred delete [oat, oat': OATable, k: Key] {
+	k in Int.(oat.map).key => {
+		one kv: Int.(oat.map) | {
+			kv.key = k
+			let loc =  oat.map.kv | {
+				oat'.map = oat.map - (loc -> loc.(oat.map))
+				oat'.empty = oat.empty + loc
+				oat'.hashFunction = oat.hashFunction
+				oat'.capacity = oat.capacity
+			}
 		}
 	} else {
-		no kv
+		no k
 		oat'.map = oat.map
 		oat'.empty = oat.empty
 		oat'.hashFunction = oat.hashFunction
@@ -77,6 +80,16 @@ pred delete [oat, oat': OATable, kv: KVPair] {
 	}
 }
 
+pred lookup [oat: OATable, k: Key, v : Value] {
+	k in Int.(oat.map).key => {
+		one kv: Int.(oat.map) | {
+			kv.key = k
+			kv.val = v
+		}
+	} else no v
+}
+
+// Finds the next available index to insert at
 fun probe [oat: OATable, idx: Int]: Int {
 	let avail = {n: oat.empty | n >= idx} | {
 		some avail => min [avail]

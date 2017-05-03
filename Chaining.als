@@ -126,20 +126,20 @@ NoKVPairsWithSameKey: check {
 
 
 // Use to see some example instances
-pred putInstance {
+pred putOK {
 	some disj c1,c2 : ChainingTable | {
 		some kv : KVPair | {
 			put[c1,c2,kv]
 		}
 	}
 }
-run putInstance for exactly 2 KVPair, 3 HashCode, exactly 2 Key, exactly 2 Value, 3 ChainingTable
+run putOK for exactly 2 KVPair, 3 HashCode, exactly 2 Key, exactly 2 Value, 3 ChainingTable
 
-pred deleteInstance {
+pred deleteOK {
 	some disj c1,c2 : ChainingTable | {
 		some k : Key | {
 			delete[c1,c2,k]
 		}
 	}
 }
-run deleteInstance for 3 KVPair, 3 HashCode, 3 Key, 3 Value, 3 ChainingTable
+run deleteOK for 3 KVPair, 3 HashCode, 3 Key, 3 Value, 3 ChainingTable
