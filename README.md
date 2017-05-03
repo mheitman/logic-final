@@ -1,6 +1,6 @@
 # logic-final
 
-We will be analyzing hash tables using Alloy, exploring the two main ways of implementing them-- via chaining (stores a list of elements in each bucket) and open addressing (stores only one element in each bucket). We have modeled both of these concrete implementations and compared their behaviors. We have also concluded that these strategies are valid HashTables implementations because we were able to create abstraction functions for both implementations.
+We will be analyzing hash tables using Alloy, exploring the two main ways of implementing them-- via chaining (stores a list of elements in each bucket) and open addressing (stores only one element in each bucket). We have modeled both of these concrete implementations and compared their behaviors. We have also hoped to conclude that these strategies are valid HashTables implementations because we were able to create abstraction functions for both implementations. We could make this affirmation about Chaining; however, because of our less specific OpenAddressing model, we feel less sure about making the same conclusions for this strategy.
 
 While modeling, we decided to abstract out the functionality of hash functions because of their great variety and the number limitations of Alloy.
 Additionally, we chose to represent HashCodes as a sig, rather than Integers because of the limitations of Alloy.
@@ -28,14 +28,15 @@ ChainingTable
 		if a key is not found in the HashTable, the value found in a lookup for that key is always empty/null
 		if a KVPair will only be found in the sequence of the HashTable that corresponds to it's key's hashcode
 		no two KVPairs with the same key can be in the HashTable at the same time
-		
 Open Addressing
 	We have modeled the Open Addressing implementation of the HashTables using an ordered sig with the following properties:
 		map - the set of data, models as a set of indices to KVPairs
 		hashFunction - not a "hashFunction", used to find the smallest available index for insertion
 		empty - a set of available indices to insert a value
 		capacity - indicates the number of KVPairs the table can hold, because in open addressing the number of elements is restricted to the size of the table)
-	Because while loops are not possible in Alloy, our model was constrained far more than we originally anticipated.
+	Because while loops are not possible in Alloy, our model was constrained far more than we originally anticipated; therefore, our implementations of lookup and delete do not very closely resemble the steps made by a true implementation.
+	Additionally, as of writing this README, we failed the putOK check when trying to show that our Open Addressing was a valid concrete implementation of the abstract model. Hopefully that issue is resolved.
+	If so, we can also conclude that Open Addressing is a valid strategy for implementing HashTables.
 	
 Comparisons
 	Chaining HashTables have no fixed capacity (depends only on the machine using them), while Open Addressing 
@@ -46,6 +47,5 @@ Challenges
 	One challenge we continually faced was whether it was acceptable to abstract out specific functionality to best benefit the model.
 	Our biggest challenge overall was with OpenAddressing was attempting to closely model the actual algorithm. 
 	In Chaining, we spent a long time figuring out how the progression of functions on HashTables. Although out first thought was Events, using them would ruin our abstraction checking.
-	
 
-This project was both interesting to model and informative. We have gained a deeper understanding of this fundamental data structure.
+This project was both interesting to model and informative. We have gained a deeper understanding of this fundamental data structure. Through this model, we were able to confirm and support many of the known properties and behaviors of HashTable implementations.
