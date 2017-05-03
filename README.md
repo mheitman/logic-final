@@ -1,6 +1,6 @@
 # logic-final
 
-We will be analyzing hash tables using Alloy, exploring the two main ways of implementing them-- via chaining (stores a list of elements in each bucket) and open addressing (stores only one element in each bucket). We have modeled both of these concrete implementations and compared their behaviors. We have also concluded that these strategies are valid HashTables implementations because we were able to create abstraction functions for both implementations. 
+We will be analyzing hash tables using Alloy, exploring the two main ways of implementing them-- via chaining (stores a list of elements in each bucket) and open addressing (stores only one element in each bucket). We have modeled both of these concrete implementations and compared their behaviors. We have also concluded that these strategies are valid HashTables implementations because we were able to create abstraction functions for both implementations.
 
 While modeling, we decided to abstract out the functionality of hash functions because of their great variety and the number limitations of Alloy.
 Additionally, we chose to represent HashCodes as a sig, rather than Integers because of the limitations of Alloy.
@@ -26,6 +26,7 @@ ChainingTable
 		if a key is not found in the HashTable, the value found in a lookup for that key is always empty/null
 		if a KVPair will only be found in the sequence of the HashTable that corresponds to it's key's hashcode
 		no two KVPairs with the same key can be in the HashTable at the same time
+		
 Open Addressing
 
 Comparisons
@@ -34,7 +35,8 @@ Comparisons
 
 Challenges
 	When predicates failed or unexpected examples were being displayed, it was very difficult to find the root of the problem.
-	Our biggest challenge overall was deciding what was acceptable to abstract out to best benefit the model.
+	One challenge we continually faced was whether it was acceptable to abstract out specific functionality to best benefit the model.
+	Our biggest challenge overall was with OpenAddressing was attempting to closely model the actual algorithm. Because while loops are not possible in Alloy, our model was constrained fair more than we originally anticipated.
 	In Chaining, we spent a long time figuring out how the progression of functions on HashTables. Although out first thought was Events, using them would ruin our abstraction checking.
 	
 
